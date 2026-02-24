@@ -25,9 +25,10 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v2
 
     - name: Render new task definition
+      id: render-task-definition
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ${{ secrets.ECS_TASK_DEFINITION }}
+        task-definition: ecs-task-def.json
         container-name: web
         image: ${{ secrets.ECR_REPOSITORY }}:latest
 
