@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DEFTONES — Fan Archive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;1,300;1,600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #080808;
+      --surface: #111111;
+      --white: #f0ede8;
+      --muted: #888;
+      --red: #c0392b;
+      --crimson: #8b0000;
+      --gold: #b8860b;
+      --accent: #e74c3c;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Space Mono', monospace;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.3;
+    }
+
+    /* CUSTOM SCROLLBAR */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--red); }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 3rem;
+      background: rgba(8,8,8,0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(192,57,43,0.2);
+    }
+
+    .nav-logo {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.3em;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--red); }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--red);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 6rem 3rem 3rem;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse 60% 60% at 70% 40%, rgba(139,0,0,0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 70%, rgba(192,57,43,0.08) 0%, transparent 60%),
+        linear-gradient(180deg, #080808 0%, #0d0505 100%);
+    }
+
+    .hero-lines {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .hero-lines::before {
+      content: '';
+      position: absolute;
+      left: 50%; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(180deg, transparent, rgba(192,57,43,0.3), transparent);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 900px;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 2rem;
+      animation: fadeUp 1s ease forwards;
+      opacity: 0;
+    }
+
+    .hero-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(5rem, 15vw, 14rem);
+      line-height: 0.85;
+      letter-spacing: -0.02em;
+      animation: fadeUp 1s ease 0.2s forwards;
+      opacity: 0;
+    }
+
+    .hero-title .line2 {
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(240,237,232,0.3);
+    }
+
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.4rem;
+      color: var(--muted);
+      margin-top: 2rem;
+      animation: fadeUp 1s ease 0.4s forwards;
+      opacity: 0;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      margin-top: 3rem;
+      padding: 0.8rem 2rem;
+      border: 1px solid var(--red);
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--red);
+      animation: fadeUp 1s ease 0.6s forwards;
+      opacity: 0;
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-indicator span {
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+    }
+
+    .scroll-indicator::after {
+      content: '';
+      width: 1px; height: 50px;
+      background: linear-gradient(180deg, var(--red), transparent);
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 7rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      line-height: 1;
+      letter-spacing: 0.02em;
+      margin-bottom: 2.5rem;
+    }
+
+    .section-divider {
+      width: 60px; height: 2px;
+      background: var(--red);
+      margin-bottom: 3rem;
+    }
+
+    /* ABOUT */
+    #about {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .about-text p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      line-height: 1.9;
+      color: #aaa;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-text p strong { color: var(--white); }
+
+    .about-visual {
+      position: relative;
+    }
+
+    .about-card {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 2.5rem;
+      position: relative;
+    }
+
+    .about-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: linear-gradient(180deg, var(--red), transparent);
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Anton', sans-serif;
+      font-size: 3rem;
+      color: var(--red);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* HISTORY */
+    #history {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 3rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(180deg, var(--red), rgba(192,57,43,0.1));
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 4rem;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .timeline-item.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -3.4rem;
+      top: 0.4rem;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 10px var(--red);
+    }
+
+    .timeline-year {
+      font-family: 'Anton', sans-serif;
+      font-size: 2.5rem;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(192,57,43,0.4);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-title {
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 0.8rem;
+    }
+
+    .timeline-desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 600px;
+    }
+
+    /* GENRE */
+    #genre {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .genre-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .genre-card {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      cursor: default;
+    }
+
+    .genre-card:hover {
+      border-color: rgba(192,57,43,0.4);
+      transform: translateY(-4px);
+    }
+
+    .genre-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--red), transparent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+
+    .genre-card:hover::after { transform: scaleX(1); }
+
+    .genre-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .genre-name {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.8rem;
+      color: var(--white);
+    }
+
+    .genre-desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* MEMBERS */
+    #members {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.5rem;
+    }
+
+    .member-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: border-color 0.3s;
+    }
+
+    .member-card:hover { border-color: rgba(192,57,43,0.5); }
+
+    .member-avatar {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: #1a0808;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .member-avatar::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(8,8,8,0.9) 100%);
+    }
+
+    .member-avatar-letters {
+      font-family: 'Anton', sans-serif;
+      font-size: 3.5rem;
+      color: rgba(192,57,43,0.3);
+      letter-spacing: -0.05em;
+      z-index: 1;
+    }
+
+    .member-info {
+      padding: 1.2rem;
+    }
+
+    .member-name {
+      font-family: 'Anton', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.3rem;
+    }
+
+    .member-role {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 0.8rem;
+    }
+
+    .member-bio {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* DISCOGRAPHY */
+    #discography {
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .album-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    .album-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .album-card:hover { transform: scale(1.02); }
+
+    .album-cover {
+      aspect-ratio: 1;
+      background: #1a0808;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Anton', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.1em;
+      text-align: center;
+      padding: 1rem;
+      position: relative;
+      overflow: hidden;
+      transition: filter 0.3s;
+    }
+
+    .album-cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      background: rgba(192,57,43,0.15);
+      transition: opacity 0.3s;
+    }
+
+    .album-card:hover .album-cover::before { opacity: 1; }
+
+    .album-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(8,8,8,0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .album-card:hover .album-overlay { opacity: 1; }
+
+    .album-overlay-year {
+      font-family: 'Anton', sans-serif;
+      font-size: 2rem;
+      color: var(--red);
+    }
+
+    .album-overlay-tracks {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    .album-info { padding: 1rem 0; }
+
+    .album-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.1em;
+    }
+
+    .album-year {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    /* ALBUM COLORS */
+    .album-adrenaline { background: linear-gradient(135deg, #1a0a00, #3d1a00); }
+    .album-adrenaline .album-overlay-year { color: #e67e22; }
+
+    .album-around { background: linear-gradient(135deg, #000d1a, #001a33); }
+    .album-around .album-overlay-year { color: #2980b9; }
+
+    .album-white { background: linear-gradient(135deg, #0a0a0a, #1a1a1a); }
+    .album-white .album-overlay-year { color: #aaa; }
+
+    .album-deftones { background: linear-gradient(135deg, #1a0000, #2d0000); }
+    .album-saturday { background: linear-gradient(135deg, #0a1a00, #1a2d00); }
+    .album-saturday .album-overlay-year { color: #27ae60; }
+
+    .album-diamond { background: linear-gradient(135deg, #1a001a, #2d002d); }
+    .album-diamond .album-overlay-year { color: #9b59b6; }
+
+    .album-koi { background: linear-gradient(135deg, #001a0d, #002d1a); }
+    .album-koi .album-overlay-year { color: #1abc9c; }
+
+    .album-ohms { background: linear-gradient(135deg, #0d0d1a, #1a1a2d); }
+    .album-ohms .album-overlay-year { color: #3498db; }
+
+    /* QUOTES */
+    #quotes {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+    }
+
+    .quote-container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .quote-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      line-height: 1.5;
+      color: var(--white);
+      margin-bottom: 2rem;
+    }
+
+    .quote-author {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--red);
+    }
+
+    .quote-dots {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 2.5rem;
+    }
+
+    .quote-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .quote-dot.active { background: var(--red); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 4rem 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: 'Anton', sans-serif;
+      font-size: 3rem;
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
+    }
+
+    .footer-logo span { color: var(--red); }
+
+    .footer-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-bottom: 3rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover { color: var(--red); }
+
+    .footer-disclaimer {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.15);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-10px); }
+    }
+
+    @keyframes glitch {
+      0% { clip-path: inset(40% 0 61% 0); transform: translate(-2px, 0); }
+      20% { clip-path: inset(92% 0 1% 0); transform: translate(1px, 0); }
+      40% { clip-path: inset(43% 0 1% 0); transform: translate(-1px, 0); }
+      60% { clip-path: inset(25% 0 58% 0); transform: translate(2px, 0); }
+      80% { clip-path: inset(54% 0 7% 0); transform: translate(-2px, 0); }
+      100% { clip-path: inset(58% 0 43% 0); transform: translate(0); }
+    }
+
+    .glitch-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .glitch-wrapper::before,
+    .glitch-wrapper::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      letter-spacing: inherit;
+      line-height: inherit;
+    }
+
+    .glitch-wrapper::before {
+      color: var(--red);
+      animation: glitch 4s infinite linear;
+      left: 2px;
+    }
+
+    .glitch-wrapper::after {
+      color: #00d4ff;
+      animation: glitch 4s infinite linear reverse;
+      left: -2px;
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 5rem 1.5rem; }
+      #about { grid-template-columns: 1fr; gap: 3rem; }
+      .genre-grid { grid-template-columns: 1fr; }
+      .members-grid { grid-template-columns: repeat(2, 1fr); }
+      .album-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-logo">DEF<span>T</span>ONES</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#history">History</a></li>
+      <li><a href="#genre">Genre</a></li>
+      <li><a href="#members">Members</a></li>
+      <li><a href="#discography">Albums</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-lines"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Sacramento, California · Est. 1988</p>
+      <h1 class="hero-title">
+        <div class="glitch-wrapper" data-text="DEFT">DEFT</div>
+        <div class="line2">ONES</div>
+      </h1>
+      <p class="hero-subtitle">Where darkness meets melody — an archive of sound and vision</p>
+      <div class="hero-badge">Fan Archive · Unofficial</div>
+    </div>
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-text">
+      <p class="section-label">Who Are They</p>
+      <h2 class="section-title">THE BAND</h2>
+      <div class="section-divider"></div>
+      <p>
+        Deftones adalah band rock asal <strong>Sacramento, California</strong>, yang telah mendefinisikan ulang batasan musik alternatif selama lebih dari tiga dekade. Didirikan pada tahun <strong>1988</strong>, mereka dikenal karena kemampuan memadukan estetika yang saling bertentangan — kekerasan dan kelembutan, kegelapan dan keindahan — menjadi satu kesatuan suara yang tak tertandingi.
+      </p>
+      <p>
+        Dengan penjualan lebih dari <strong>10 juta album</strong> di seluruh dunia, band ini telah meraih Grammy Award dan mendapat pengakuan kritis yang luar biasa. Musik mereka menggabungkan post-metal, shoegaze, dan dream pop menjadi identitas yang sepenuhnya orisinal.
+      </p>
+      <p>
+        Vokalis <strong>Chino Moreno</strong> dikenal memiliki jangkauan vokal yang luar biasa — dari teriakan aggressive hingga bisikan ethereal yang menghantui — menjadi tanda tangan band yang paling dikenal.
+      </p>
+    </div>
+    <div class="about-visual">
+      <div class="about-card">
+        <div class="about-stats">
+          <div class="stat-item">
+            <span class="stat-number">9</span>
+            <span class="stat-label">Studio Albums</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">10M+</span>
+            <span class="stat-label">Albums Sold</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">35+</span>
+            <span class="stat-label">Years Active</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">1</span>
+            <span class="stat-label">Grammy Award</span>
+          </div>
+        </div>
+        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.06);">
+          <p style="font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; margin-bottom: 0.8rem;">Asal Kota</p>
+          <p style="font-family: 'Anton', sans-serif; font-size: 1.5rem; letter-spacing: 0.1em;">SACRAMENTO, CA</p>
+        </div>
+        <div style="margin-top: 1.5rem;">
+          <p style="font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; margin-bottom: 0.8rem;">Label</p>
+          <p style="font-size: 0.85rem; letter-spacing: 0.1em;">Maverick Records · Reprise Records</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section id="history" style="max-width:1200px; margin:0 auto; padding: 7rem 3rem;">
+    <p class="section-label">Timeline</p>
+    <h2 class="section-title">SEJARAH</h2>
+    <div class="section-divider"></div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">1988</div>
+        <div class="timeline-title">Awal Mula di Sacramento</div>
+        <p class="timeline-desc">Deftones terbentuk di Sacramento oleh Chino Moreno (vokal), Stephen Carpenter (gitar), Chi Cheng (bass), dan Abe Cunningham (drum). Mereka mulai tampil di scene lokal, membangun reputasi melalui pertunjukan live yang energik.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1995</div>
+        <div class="timeline-title">Adrenaline — Debut yang Mengguncang</div>
+        <p class="timeline-desc">Album debut "Adrenaline" dirilis lewat Maverick Records. Album ini menampilkan pendekatan agresif yang mencirikan era nu-metal awal, namun sudah menunjukkan benih-benih sensibilitas artistik unik yang akan terus berkembang. Lagu "7 Words" menjadi hit awal mereka.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1997</div>
+        <div class="timeline-title">Around the Fur — Eksperimentasi Dimulai</div>
+        <p class="timeline-desc">Album kedua menunjukkan evolusi signifikan. "My Own Summer (Shove It)" dan "Be Quiet and Drive (Far Away)" menjadi hits radio yang memperkenalkan jangkauan vokal luas Chino kepada khalayak lebih besar.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2000</div>
+        <div class="timeline-title">White Pony — Mahakarya Definitif</div>
+        <p class="timeline-desc">Dipandang sebagai puncak artistik band ini, "White Pony" memenangkan Grammy Award untuk Best Metal Performance. Album ini menggabungkan elektronika, trip-hop, dan metal dengan cara yang belum pernah ada sebelumnya. "Digital Bath", "Elite", dan "Change (In the House of Flies)" menjadi lagu ikonik.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2008</div>
+        <div class="timeline-title">Tragedi Chi Cheng</div>
+        <p class="timeline-desc">Bassist Chi Cheng mengalami kecelakaan mobil yang serius, membuatnya koma. Band merilis "Eros" sebagai penghormatan, namun album tersebut tidak pernah resmi dirilis. Chi meninggal dunia pada tahun 2013. Sergio Vega kemudian mengisi posisi bass secara permanen.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2010–2020</div>
+        <div class="timeline-title">Era Kematangan Artistik</div>
+        <p class="timeline-desc">Band merilis Diamond Eyes (2010), Koi No Yokan (2012), Gore (2016), dan Ohms (2020) — setiap album mengeksplorasi dimensi baru sambil mempertahankan identitas sonic yang khas. Mereka mengukuhkan diri sebagai salah satu band rock paling konsisten dan berani secara artistik.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GENRE -->
+  <section id="genre">
+    <p class="section-label">Sound Identity</p>
+    <h2 class="section-title">GENRE & PENGARUH</h2>
+    <div class="section-divider"></div>
+    <div class="genre-grid">
+      <div class="genre-card">
+        <div class="genre-icon">⚡</div>
+        <div class="genre-name">Alternative Metal</div>
+        <p class="genre-desc">Fondasi utama suara Deftones. Riff-riff berat dari Stephen Carpenter berpadu dengan melodi yang tidak terduga, menciptakan keseimbangan antara agresi dan keanggunan yang menjadi trademark mereka.</p>
+      </div>
+      <div class="genre-card">
+        <div class="genre-icon">🌫️</div>
+        <div class="genre-name">Shoegaze</div>
+        <p class="genre-desc">Pengaruh band-band seperti My Bloody Valentine sangat terasa. Lapisan gitar yang dreamy dan dreamy, reverb yang melimpah, serta tekstur suara yang immersive menciptakan atmosfer ethereal khas Deftones.</p>
+      </div>
+      <div class="genre-card">
+        <div class="genre-icon">🌙</div>
+        <div class="genre-name">Dream Pop</div>
+        <p class="genre-desc">Sisi paling lembut dari musik mereka. Vokal Chino Moreno sering meluncur menjadi bisikan yang hampir hipnotis, menciptakan kontras dramatis dengan momen-momen heavy yang mengikutinya.</p>
+      </div>
+      <div class="genre-card">
+        <div class="genre-icon">🔊</div>
+        <div class="genre-name">Post-Hardcore</div>
+        <p class="genre-desc">Energi mentah dari scene hardcore ikut membentuk dinamika penampilan live mereka. Intensitas dan ketidakprediktabilan yang menjadi ciri khas post-hardcore terasa dalam banyak komposisi mereka.</p>
+      </div>
+      <div class="genre-card">
+        <div class="genre-icon">🎛️</div>
+        <div class="genre-name">Trip-Hop / Elektronika</div>
+        <p class="genre-desc">Terutama terasa di "White Pony" dan album-album selanjutnya. Pengaruh trip-hop menambah dimensi atmosferik dan produksi yang sophisticated, jauh melampaui batasan genre metal konvensional.</p>
+      </div>
+      <div class="genre-card">
+        <div class="genre-icon">🎸</div>
+        <div class="genre-name">Nu-Metal (Early)</div>
+        <p class="genre-desc">Meski sering dikategorikan nu-metal pada awal karir, Deftones selalu melampaui label ini. Mereka membawa nuansa artistik yang lebih dalam yang akhirnya mengantar mereka menuju identitas yang sepenuhnya original.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEMBERS -->
+  <section id="members">
+    <p class="section-label">The People</p>
+    <h2 class="section-title">ANGGOTA BAND</h2>
+    <div class="section-divider"></div>
+    <div class="members-grid">
+      <div class="member-card">
+        <div class="member-avatar">
+          <span class="member-avatar-letters">CM</span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">Chino Moreno</div>
+          <div class="member-role">Vocals / Guitar</div>
+          <p class="member-bio">Lahir 20 Juni 1973 di Sacramento. Dikenal sebagai salah satu vokalis paling ekspresif dalam rock modern, dengan kemampuan beralih dari teriakan serak ke falsetto ethereal yang memukau dalam hitungan detik.</p>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-avatar">
+          <span class="member-avatar-letters">SC</span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">Stephen Carpenter</div>
+          <div class="member-role">Lead Guitar</div>
+          <p class="member-bio">Lahir 2 Februari 1973. Arsitek sonic band ini. Dikenal dengan tuning gitar yang sangat rendah dan penggunaan extended range guitars, menciptakan riff-riff yang masif namun penuh nuansa.</p>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-avatar">
+          <span class="member-avatar-letters">SV</span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">Sergio Vega</div>
+          <div class="member-role">Bass Guitar</div>
+          <p class="member-bio">Mantan bassist Quicksand yang bergabung menggantikan Chi Cheng. Membawa dimensi baru pada permainan bass Deftones dengan pendekatan yang melodis namun tetap penuh power.</p>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-avatar">
+          <span class="member-avatar-letters">AC</span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">Abe Cunningham</div>
+          <div class="member-role">Drums</div>
+          <p class="member-bio">Lahir 11 Desember 1973. Salah satu drummer tersibuk dan paling dinamis dalam rock. Gaya bermainnya yang groove-oriented namun eksplosif memberikan fondasi yang sempurna bagi musik Deftones.</p>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-avatar">
+          <span class="member-avatar-letters">FK</span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">Frank Delgado</div>
+          <div class="member-role">Keyboards / Samples / Turntables</div>
+          <p class="member-bio">Bergabung secara penuh pada 2000. Bertanggung jawab atas lapisan tekstur elektronik yang mendefinisikan era "White Pony" dan seterusnya, memberikan dimensi atmosferik yang tak ternilai.</p>
+        </div>
+      </div>
+    </div>
+    <!-- Chi Cheng tribute -->
+    <div style="margin-top: 3rem; padding: 2.5rem; border: 1px solid rgba(192,57,43,0.3); background: rgba(139,0,0,0.05); text-align: center;">
+      <p style="font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--red); margin-bottom: 1rem;">In Memoriam</p>
+      <p style="font-family: 'Anton', sans-serif; font-size: 1.5rem; letter-spacing: 0.2em; margin-bottom: 0.5rem;">CHI CHENG</p>
+      <p style="font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em;">1970 – 2013 · Bass Guitar · Co-Founder</p>
+      <p style="font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--muted); margin-top: 1rem; font-size: 1.05rem;">
+        "One of the most distinctive bassists in alternative rock history. His loss was profound, but his music lives on in every note."
+      </p>
+    </div>
+  </section>
+
+  <!-- DISCOGRAPHY -->
+  <section id="discography">
+    <p class="section-label">Catalog</p>
+    <h2 class="section-title">DISKOGRAFI</h2>
+    <div class="section-divider"></div>
+    <div class="album-grid">
+      <div class="album-card">
+        <div class="album-cover album-adrenaline">
+          <span>ADRENALINE</span>
+          <div class="album-overlay">
+            <div class="album-overlay-year">1995</div>
+            <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:#aaa; margin-top:0.5rem;">Debut yang agresif. "7 Words", "Bored", "Engine No.9"</p>
+            <span class="album-overlay-tracks">11 Tracks</span>
+          </div>
+        </div>
+        <div class="album-info">
+          <div class="album-title">Adrenaline</div>
+          <div class="album-year">1995</div>
+        </div>
+      </div>
+      <div class="album-card">
+        <div class="album-cover album-around">
+          AROUND THE FUR
+          <div class="album-overlay">
+            <div class="album-overlay-year">1997</div>
+            <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:#aaa; margin-top:0.5rem;">"My Own Summer", "Be Quiet and Drive", "Mascara"</p>
+            <span class="album-overlay-tracks">10 Tracks</span>
+          </div>
+        </div>
+        <div class="album-info">
+          <div class="album-title">Around the Fur</div>
+          <div class="album-year">1997</div>
+        </div>
+      </div>
+      <div class="album-card">
+        <div class="album-cover album-white" style="font-size:1.1rem;">
+          WHITE PONY
+          <div class="album-overlay">
+            <div class="album-overlay-year" style="color:#f0ede8;">2000</div>
+            <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:#aaa; margin-top:0.5rem;">Grammy Winner. "Digital Bath", "Elite", "Change"</p>
+            <span class="album-overlay-tracks">11 Tracks · Grammy 2001</span>
+          </div>
+        </div>
+        <div class="album-info">
+          <div class="album-title">White Pony ★</div>
+          <div class="album-year">2000 · Grammy Award</div>
+        </div>
+      </div>
+      <div class="album-card">
+        <div class="album-cover album-deftones">
+          DEFTONES
+          <div class="album-overlay">
+            <div class="album-overlay-year">2003</div>
+            <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:#aaa; margin-top:0.5rem;">"Minerva", "Hexagram", "Needles and Pins"</p>
+            <span class="album-overlay-tracks">12 Tracks</span>
+          </div>
+        </div>
+        <div class="album-info">
+          <div class="album-title">Deftones</div>
+          <div class="album-year">2003</div>
+        </div>
+      </div>
+      <div class="album-card">
+        <div class="album-cover album-saturday">
+          SATURDAY NIGHT WRIST
+          <div class="album-overlay">
+            <div class="album-overlay-year">2006</div>
+            <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:#aaa; margin-top:0.5rem;">"Hole in the Earth", "Beware", "Cherry Waves"</p>
+            <span class="album-overlay-tracks">11 Tracks</span>
+          </div>
+        </div>
+        <div class="album-info">
+          <div class="album-title">Saturday Night Wrist</div>
+          <div class="album-year">2006</div>
+        </div>
+      </div>
+      <div class="album-card">
+        <div class="album-cover album-diamond">
+          DIAMOND EYES
+          <div class="album-overlay">
+            <div class="album-overlay-year">2010</div>
+            <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:#aaa; margin-top:0.5rem;">"Diamond Eyes", "Rocket Skates", "Sextape"</p>
+            <span class="album-overlay-tracks">11 Tracks</span>
+          </div>
+        </div>
+        <div class="album-info">
+          <div class="album-title">Diamond Eyes</div>
+          <div class="album-year">2010</div>
+        </div>
+      </div>
+      <div class="album-card">
+        <div class="album-cover album-koi">
+          KOI NO YOKAN
+          <div class="album-overlay">
+            <div class="album-overlay-year">2012</div>
+            <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:#aaa; margin-top:0.5rem;">"Leathers", "Tempest", "Entombed"</p>
+            <span class="album-overlay-tracks">11 Tracks</span>
+          </div>
+        </div>
+        <div class="album-info">
+          <div class="album-title">Koi No Yokan</div>
+          <div class="album-year">2012</div>
+        </div>
+      </div>
+      <div class="album-card">
+        <div class="album-cover album-ohms">
+          OHMS
+          <div class="album-overlay">
+            <div class="album-overlay-year">2020</div>
+            <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:#aaa; margin-top:0.5rem;">"Ohms", "Genesis", "The Spell of Mathematics"</p>
+            <span class="album-overlay-tracks">10 Tracks</span>
+          </div>
+        </div>
+        <div class="album-info">
+          <div class="album-title">Ohms</div>
+          <div class="album-year">2020</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTES -->
+  <section id="quotes" style="border-top: 1px solid rgba(255,255,255,0.06); padding: 7rem 3rem; text-align:center;">
+    <p class="section-label">Words</p>
+    <div class="quote-container">
+      <div id="quoteText" class="quote-text"></div>
+      <div id="quoteAuthor" class="quote-author"></div>
+      <div class="quote-dots" id="quoteDots"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">DEFT<span>ONES</span></div>
+    <p class="footer-tagline">Where darkness meets melody.</p>
+    <ul class="footer-links">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#history">History</a></li>
+      <li><a href="#members">Members</a></li>
+      <li><a href="#discography">Albums</a></li>
+    </ul>
+    <p class="footer-disclaimer">
+      This is an unofficial fan-made website created for educational and fan purposes only.<br>
+      All band information, names, and music belong to their respective owners. Not affiliated with Deftones or their management.
+    </p>
+  </footer>
+
+  <script>
+    // SCROLL REVEAL
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.timeline-item').forEach(el => observer.observe(el));
+
+    // QUOTES
+    const quotes = [
+      { text: "Kami tidak pernah ingin menjadi band yang hanya memainkan satu genre. Kami ingin membuat musik yang bisa membuat orang menangis dan menghancurkan segalanya di waktu yang sama.", author: "Chino Moreno" },
+      { text: "White Pony bukan hanya album — itu adalah pernyataan bahwa kami tidak peduli dengan label apapun yang orang tempelkan pada kami.", author: "Stephen Carpenter" },
+      { text: "Musik Deftones seperti mimpi buruk yang indah. Kamu tidak ingin bangun meski ada sesuatu yang menakutkan di sana.", author: "Fan Review, NME" },
+      { text: "Mereka adalah satu-satunya band yang bisa membuatmu merasa begitu hancur dan begitu cantik pada saat yang bersamaan.", author: "Rolling Stone" }
+    ];
+
+    let current = 0;
+    const textEl = document.getElementById('quoteText');
+    const authorEl = document.getElementById('quoteAuthor');
+    const dotsEl = document.getElementById('quoteDots');
+
+    function showQuote(i) {
+      textEl.style.opacity = 0;
+      authorEl.style.opacity = 0;
+      setTimeout(() => {
+        textEl.textContent = `"${quotes[i].text}"`;
+        authorEl.textContent = `— ${quotes[i].author}`;
+        textEl.style.transition = 'opacity 0.6s';
+        authorEl.style.transition = 'opacity 0.6s';
+        textEl.style.opacity = 1;
+        authorEl.style.opacity = 1;
+        document.querySelectorAll('.quote-dot').forEach((d, idx) => {
+          d.classList.toggle('active', idx === i);
+        });
+      }, 300);
+    }
+
+    quotes.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'quote-dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => { current = i; showQuote(i); });
+      dotsEl.appendChild(dot);
+    });
+
+    showQuote(0);
+    setInterval(() => {
+      current = (current + 1) % quotes.length;
+      showQuote(current);
+    }, 5000);
+
+    // NAV ACTIVE STATE ON SCROLL
+    const sections = document.querySelectorAll('section, #hero');
+    const navLinks = document.querySelectorAll('.nav-links a');
+
+    window.addEventListener('scroll', () => {
+      let pos = window.scrollY + 200;
+      sections.forEach(s => {
+        if (s.offsetTop <= pos && s.offsetTop + s.offsetHeight > pos) {
+          navLinks.forEach(a => {
+            a.style.color = a.getAttribute('href') === '#' + s.id ? 'var(--white)' : '';
+          });
+        }
+      });
+    });
+
+    // CURSOR GLOW
+    const cursor = document.createElement('div');
+    cursor.style.cssText = `
+      position: fixed; width: 300px; height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(192,57,43,0.06) 0%, transparent 70%);
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s;
+      top: -9999px; left: -9999px;
+    `;
+    document.body.appendChild(cursor);
+
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+  </script>
+</body>
+</html>
