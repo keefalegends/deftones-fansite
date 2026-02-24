@@ -1,0 +1,13 @@
+name: Deploy to ECS (disabled)
+
+on:
+  workflow_dispatch: # manual trigger saja, tidak auto
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Placeholder
+      run: |
+        echo "ECS deployment workflow is not enabled yet"
